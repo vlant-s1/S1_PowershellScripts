@@ -147,7 +147,8 @@ try {
     } else {
         Write-Host "[*] Processing..." -ForegroundColor Cyan
 
-        $process = Start-Process -FilePath $installerPath -ArgumentList @("-c", "-k", $passphrase) -Wait -PassThru
+        $arguments = "-c -k `"$passphrase`""
+        $process = Start-Process -FilePath $installerPath -ArgumentList $arguments -Wait -PassThru
 
         if ($process.ExitCode -notin @(0, 3010)) {
             throw "Process failed with exit code: $($process.ExitCode)"
@@ -172,6 +173,20 @@ catch {
     [Console]::Error.WriteLine($errorMsg)
     exit 1
 }
+
+# =====================================================================
+# SENTINELCTL EXAMPLES (manual use)
+# =====================================================================
+<#
+# Check agent version:
+& $sentinelctl version
+
+# Check agent status:
+& $sentinelctl status
+
+# Disable Tamper Protection:
+& $sentinelctl unprotect -k "$passphrase"
+
 # Generate logs:
 & $sentinelctl log_generate
 #>
